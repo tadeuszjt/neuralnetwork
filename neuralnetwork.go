@@ -58,6 +58,12 @@ func (nn *NeuralNetwork) Weights() []float32 {
 	return nn.Values[idx:]
 }
 
+func (nn *NeuralNetwork) ClearInputs() {
+    for i := range nn.Inputs() {
+        nn.Inputs()[i] = 0.0
+    }
+}
+
 func (nn *NeuralNetwork) Process() {
 	inputs := nn.Inputs()
 	neurons := nn.Neurons()
@@ -97,12 +103,12 @@ func (nn *NeuralNetwork) Process() {
 		neurons[n] = 1 / (1 + float32(math.Exp(-activationScalar*float64(activation))))
 	}
 
-	p := (nn.NumLayers - 1) * nn.NumNeuronsPerLayer
+	prevLayer := (nn.NumLayers - 1) * nn.NumNeuronsPerLayer
 	for o := 0; o < nn.NumOutputs; o++ {
 		activation := float32(0.0)
 
 		for i := 0; i < nn.NumNeuronsPerLayer; i++ {
-			activation += neurons[p+i] * weights[w]
+			activation += neurons[prevLayer+i] * weights[w]
 			w++
 		}
 
